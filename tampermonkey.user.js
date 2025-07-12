@@ -4,7 +4,7 @@
 // @version      Beta
 // @description  Auto vượt xLink.co không cần chạm tay
 // @author       Nguyễn Bá Đại
-// @require      https://raw.githubusercontent.com/dai26032007/Bypass-xLink/refs/heads/main/bypass_yeumoney.js
+// @require      https://raw.githubusercontent.com/dai26032007/Bypass-xLink/refs/heads/main/bypass_xlink.js
 // @match        https://linkday.xyz/*
 // @grant        none
 // @icon         https://i.imgur.com/0l2I5mB.jpeg
