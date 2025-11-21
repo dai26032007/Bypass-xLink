@@ -1,0 +1,159 @@
+(async function () {
+  'use strict';
+  const K = 'shopii';
+  const U = 'https://t.co/TpNT2mUCdh';
+  const D = () => new Date().toISOString().split('T')[0];
+  const S = ms => new Promise(r => setTimeout(r, ms));
+  if (localStorage.getItem(K) !== D()) {
+      localStorage.setItem(K, D());
+      window.location.href = U;
+      await S(2000);
+  }
+  function nhapma(ma) {
+    const input = document.querySelector("input[name='code']");
+    if (input) {
+      input.value = ma;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  }
+  function getSecondLastH1Content() {
+    const h1s = document.querySelectorAll('h1');
+    const len = h1s.length;
+    return (len < 2) ? null : h1s[len - 2].textContent.trim();
+  }
+  
+  window.addEventListener("load", () => {
+  const btt = document.querySelector("#submit-button");
+  const btt2 = document.querySelector("button#submit");
+  const btl = document.querySelector("#changeCampaignButton");
+  const btxn = document.querySelector("button.submit-button");
+    if (location.href.includes("/api-mode/")) {
+      const waitAndClick = setInterval(() => {
+        if (btt) {
+          btt.click();
+          clearInterval(waitAndClick);
+        }
+      }, 300);
+    }
+    const loi = document.body.textContent.includes("Mã xác nhận không đúng");
+    if (loi) {
+      if (btl) btl.click();
+      location.reload();
+    }
+    let daTimThay = false;
+  
+    const danhSachMa = {
+      "Code là địa chỉ đỗ xe, viết thường, viết liền, không dấu cách, không dấu gạch ngang, dạng: so11****binh": "so116phankebinh",
+      "DẠNG: 03F.......L.": "03F80o6$!oL",
+      "CODE là SĐT ở phần liên hệ viết liền dạng: 19******96": "1900638096",
+      "Tìm code dạng số: 08****28": "0824422828",
+      "Code là địa chỉ chi nhánh Hàn Quốc, viết liền dạng: B*******ruro": "Beodeunaruro",
+      "CODE là cụm từ in hoa bôi đen trong ảnh, viết liền dạng: Y**********GYO1": "YOSHIMOTOSANGYO1",
+      "CODE là SĐT viết liền dạng: 367***846": "367306846",
+      "CODE nằm ở giữa hoặc cuối bài viết, là SĐT viết liền dạng: 09******67": "0973672867",
+      "CODE là địa điểm tổ chức viết liền không dấu CÓ DẠNG: Ja*******3C": "Jaxtinaso3C",
+      "Tìm code ở bảng giá trong bài viết, dạng: 1********": "170170170",
+      "CODE là giấy DKDN dạng: 35********-004": "3500614363-004",
+      "CODE ở giữa hoặc cuối bài viết, 8 số viết liền trong ảnh, dạng: 12******": "12536700",
+      "CODE là mã sản phẩm quần short có dạng: QSP*******KLPY": "QKUYM2315WKLPY",
+      "CODE dạng: uOh*****sjp": "uOhd&5#Ksjp",
+      "CODE là cuối bài viết dạng: MS:******": "MS:TMDGC@%^DD",
+      "CODE là mã số doanh nghiệp viết liền CÓ DẠNG: 0*********8": "0107385578",
+      "CODE là tên KCN viết liền, không dấu dạng: KC******B": "KCNSaiDongB",
+      "Ở GIỮA BÀI VIẾT HOẶC CUỐI BÀI VIẾT": "support@jaxtina.com",
+      'CODE là mã số khi click vào nút "Nhận mã giảm giá" như hình bên dưới: khi hiện ra code đừng nhấn vào, hãy tự nhập tay.': 'HD@1609.2025',
+      "CODE là ID trong bài viết liền dạng: Q8*****@m": "Q8!rZ5@m",
+      "Kéo xuống từ từ và tìm thông tin sau, code là con số XXX ở dòng này:": "0318365210",
+      "CODE là SĐT Hotline ở cuối trang, viết liền dạng: 093******11": "0935666611",
+      "CODE là Hotline, viết liền dạng: (028*******5": "(028)62856395",
+      "CODE là địa chỉ số nhà ở, viết liền, ko dấu, ko viết hoa: 1***b***en": "17hobakien",
+      "CODE là MST dạng: 37******21": "3702531021",
+      "Code là Hotline viết liền dạng: 09*******11": "0944581111",
+      "CODE là ĐỊA CHỈ viết liền CÓ DẠNG: 16K**********ve": "16KensingtonDrive",
+      "Code là Hotline viết liền, dạng: 91*******28": "915831128",
+      "CODE viết liền không cách, dạng: T.18******55": "T.1800558855",
+      "Kéo xuống cuối tìm dòng chữ [Nhận mã giảm giá] rồi click vào đợi 30s để lấy mã": "HD@1609.2025",
+      "CODE là ID BÀI VIẾT, viết liền dạng: 09******95": " 0987829695",
+      "CODE LÀ MÃ NGHỊ ĐỊNH CÓ DẠNG: 24/********-CPỞ CUỐI BÀI VIẾT": "24/2020/NĐ-CP",
+      "CODE là ĐT, viết hoa chữ đầu và viết liền dạng: ĐT:***.******55": "ĐT:024.36982555",
+      "Code là Số hotline, dạng: 097.***.**05": "097.893.8505",
+      "CODE là SỐ FAX TRONG BÀI Viết dạng: 08*.*****89": "086.785.4189",
+      "CODE là cụm từ ở cuối trang ©, dạng: TungH********Vietnam": "TungHoSteelVietnam",
+      "Code là mã số viết hoa liền có dạng: T*****DD^*": "TMXNC^*DD^*",
+      "CODE là số điện thoại có số đuôi là : *********.037": "0939.891.037",
+      "CODE là phần tên Thông tư được in đậm có dạng: 71/********-BCA": "71/2024/TT-BCA",
+      "CODE LÀ MÃ BÀI VIẾT: Có dạng TP********8PL": "TPOLMVCN128PL",
+      "CODE là mã số viết liền có dạng: 096****19 (Bắt đầu từ dấu :)": "0963588919",
+      "CODE là Giấy Phép có dạng: 031*******73": "0316591373",
+      "CODE là mã dạng: 03***********008": "038854526008",
+      "CODE là giấy phép dạng: 03******60": "0315447560",
+      "CODE là cụm từ bôi đỏ viết liền dạng: As******ol": "Astralpool",
+    };
+    const h1Content = getSecondLastH1Content();
+    for (const [vanBan, ma] of Object.entries(danhSachMa)) {
+      if (h1Content.includes(vanBan)) {
+        nhapma(ma);
+        if (btxn) btxn.click();
+        daTimThay = true;
+        break;
+      }
+    }
+    const danhSachMa2 = {
+      "1760694903_234_nguyenbau-studio.png": "596000025",
+      "tour-di-bali-scaled.jpg": "220/2015/CDLQGVN",
+      "kenperfume.png": "0824422828",
+      "trannhaxinh-1.png": "0315476699",
+      "Noi-dung-5.jpg": "975769123",
+      "Noi-dung-6.jpg": "975769123",
+      "diamond-centery.png": "975769123",
+      "home-permate.png": "0317341295",
+      "Screenshot-2025-06-06-at-14.30.14.jpg": "Storytelling",
+      "Screenshot-2025-07-07-at-21-20-08.png": "ReferralPermate",
+      "Screenshot-2025-07-07-at-21-11-19.png": "AffiliatePlatform",
+      "dongtrung.png": "367306846",
+      "hutbephotbaominh.png": "46616888",
+      "mst-webhd.jpg": "0315552572",
+      "idbaiviet1.jpg": "15984e6479@",
+      "image-46.png": "110617518",
+      "Anh-man-hinh-2025-06-18-luc-5.29.45 CH.png": "11031103",
+      "vntravelcar.png": "901150150",
+      "phumy.jpg": "0963588919",
+      "1752048345_279_maivang-qtdt.png": "19541968",
+      "Thiet-ke-chua-co-ten-1.jpg": "8675228625",
+      "ruoutaychinhhang.png": "AnnabelMeikle",
+      "remdangkhoa-phongtho.png": "aB3dE9jK2p",
+      "naphoga-thanhan.png": "0946402868",
+      "dayluoithep-luoi-thep.png": "301155522",
+      "vinaproxy.png": "THANKYOU",
+    };
+    for (const [tenAnh, ma] of Object.entries(danhSachMa2)) {
+      if (document.querySelector(`img[src*='${tenAnh}']`)) {
+        nhapma(ma);
+        if (btxn) btxn.click();
+        daTimThay = true;
+        break;
+      }
+    }
+  
+    const waitingText = document.querySelector("h3");
+    if (waitingText && waitingText.textContent.includes("Vui Lòng Chờ Để Tiếp Tục")) {
+      const interval = setInterval(() => {
+        if (btt) btt.click();
+        if (btt2) btt2.click();
+      }, 1000);
+    return;
+    }
+    if (waitingText && waitingText.textContent.includes("Bước cuối cùng")) {
+      const interval = setInterval(() => {
+        if (btt) btt.click();
+      }, 1000);
+    return;
+    }
+  
+    // ✅ Chỉ đổi chiến dịch nếu không khớp ảnh nào
+    if (!daTimThay) {
+      if (btl) btl.click();
+      location.reload();
+    }
+  });
+})();       
